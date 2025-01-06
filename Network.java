@@ -31,7 +31,7 @@ public class Network {
      *  If there is no such user, returns null.
      *  Notice that the method receives a String, and returns a User object. */
     public User getUser(String name) {
-        if(this.users== null){
+        if(this.users[0] == null){
             return null;
         }
         for(int i = 0; i<this.userCount; i++){
@@ -51,8 +51,8 @@ public class Network {
             return false;
         }
         if(this.userCount<this.users.length){
-            this.users[userCount+1] = new User(name);
-            userCount++;
+            this.users[this.userCount] = new User(name);
+            this.userCount++;
             return true;
         }
         return false;
@@ -62,7 +62,7 @@ public class Network {
      *  If any of the two names is not a user in this network,
      *  or if the "follows" addition failed for some reason, returns false. */
     public boolean addFollowee(String name1, String name2) {
-        if(getUser(name1)==null || getUser(name2) == null){
+        if(getUser(name1)==null || getUser(name2) == null || name1.equals(name2)){
             return false;
         }
         return getUser(name1).addFollowee(name2);
@@ -71,30 +71,26 @@ public class Network {
     /** For the user with the given name, recommends another user to follow. The recommended user is
      *  the user that has the maximal mutual number of followees as the user with the given name. */
     public String recommendWhoToFollow(String name) {
-        //// Replace the following statement with your code
-        if(getUser(name)==null){
+        if(getUser(name)==null&&this.users[0]==null){
             return null;
         }
         int max =0;
-        String thename = "";
+        String thename = null;
         for (int i = 0; i < this.getUserCount(); i++) {
-            if(this.users[i] !=null && (getUser(name)!=this.users[i] && getUser(name).countMutual(this.users[i])>max)){
+            if(this.users[i] !=null && getUser(name)!=this.users[i] && getUser(name).countMutual(this.users[i])>max){
                 max = getUser(name).countMutual(users[i]);
                 thename = users[i].getName();
             }
         }
-        if(!thename.equals("")){
-            return thename;
-        }
-        return null;
+        return thename;
     }
 
     /** Computes and returns the name of the most popular user in this network: 
      *  The user who appears the most in the follow lists of all the users. */
     public String mostPopularUser() {
         int max=0;
-        String name = "";
-        if(this.userCount==0){
+        String name = null;
+        if(this.users[0] == null){
             return null;
         }
         for(int i=0; i<this.getUserCount();i++){
@@ -103,10 +99,7 @@ public class Network {
                 name = this.users[i].getName();
             }   
         }
-        if(!name.equals("")){
-            return name;
-        }
-        return null;
+        return name;
     }
 
     /** Returns the number of times that the given name appears in the follows lists of all
@@ -126,11 +119,11 @@ public class Network {
         if(this.users == null){
             return null;
         }
-        String list = "";
+        String list = null;
         for(int i = 0; i<this.getUserCount(); i++){
             if(this.users[i]!=null){
-                list+= this.users[i].toString();
                 list+= "\n";
+                list+= this.users[i].toString();    
             }
         }
         return list;

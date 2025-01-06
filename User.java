@@ -43,11 +43,11 @@
 
     /** If this user follows the given name, returns true; otherwise returns false. */
     public boolean follows(String name) {
-        if(this.getfFollows() == null){
+        if(this.getfCount() ==0){
             return false;
         }
         else{
-            for(int i = 0; i<this.follows.length; i++){
+            for(int i = 0; i<this.getfCount(); i++){
                 if(this.follows[i] != null && this.follows[i].equals(name)){
                     return true;
                 }
@@ -58,15 +58,14 @@
     /** Makes this user follow the given name. If successful, returns true. 
      *  If this user already follows the given name, or if the follows list is full, does nothing and returns false; */
     public boolean addFollowee(String name) {
-        if(!follows(name)){
-            for(int i=0; i<this.follows.length; i++){
-                if(follows[i] == null){
-                    follows[i] = name;
-                    this.fCount++;
-                    return true;
-                }
-            }
+        if(this.getName().equals(name) || this.fCount==this.maxfCount){
+            return false;
         }
+        if(!follows(name)){
+            follows[this.fCount] = name;
+            this.fCount++;
+            return true;           
+        }   
         return false;
     }
 
@@ -76,7 +75,7 @@
         int place = 0;
         boolean bool = false;
         if(this.fCount!=0){
-            for(int i = 0; i<this.follows.length; i++){
+            for(int i = 0; i<this.fCount; i++){
                 if(this.follows[i].equals(name)){
                     place=i;
                     bool = true;
