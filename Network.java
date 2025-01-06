@@ -119,7 +119,7 @@ public class Network {
         if(this.users == null){
             return null;
         }
-        String list = null;
+        String list = "Network:";
         for(int i = 0; i<this.getUserCount(); i++){
             if(this.users[i]!=null){
                 list+= "\n";
