@@ -48,7 +48,7 @@
         }
         else{
             for(int i = 0; i<this.getfCount(); i++){
-                if(this.follows[i] != null && this.follows[i].equals(name)){
+                if(this.follows[i] != null && name.toLowerCase().equals(this.follows[i].toLowerCase())){
                     return true;
                 }
             }
@@ -58,7 +58,7 @@
     /** Makes this user follow the given name. If successful, returns true. 
      *  If this user already follows the given name, or if the follows list is full, does nothing and returns false; */
     public boolean addFollowee(String name) {
-        if(this.getName().equals(name) || this.fCount==this.maxfCount){
+        if(this.getName().toLowerCase().equals(name.toLowerCase()) || this.fCount==this.maxfCount){
             return false;
         }
         if(!follows(name)){
@@ -74,9 +74,12 @@
     public boolean removeFollowee(String name) {
         int place = 0;
         boolean bool = false;
+        if(!this.follows(name)){
+            return bool;
+        }
         if(this.fCount!=0){
             for(int i = 0; i<this.fCount; i++){
-                if(this.follows[i].equals(name)){
+                if(name.equals(this.follows[i])){
                     place=i;
                     bool = true;
                     break;
@@ -93,6 +96,7 @@
                 for(int i=place; i<this.fCount-1; i++){
                     this.follows[i] = this.follows[i+1];
                 }
+                this.follows[this.fCount-1]=null;
                 this.fCount--;
                 return true;
             }        
@@ -108,12 +112,8 @@
         }
         int counter = 0;
         for(int i=0; i<this.getfCount(); i++){
-            for(int j=0; j<other.getfCount(); j++){
-                if(this.getfFollows()[i]!=null && other.getfFollows()[j]!=null){
-                    if(this.getfFollows()[i].equals(other.getfFollows()[j])){
-                        counter++;
-                    }
-                }
+            if(other.follows(this.follows[i])){
+                counter++;
             }
         }
         return counter;

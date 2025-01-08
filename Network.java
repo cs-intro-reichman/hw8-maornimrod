@@ -35,7 +35,7 @@ public class Network {
             return null;
         }
         for(int i = 0; i<this.userCount; i++){
-            if(this.users[i]!=null&&this.users[i].getName().equals(name)){
+            if(this.users[i]!=null&&this.users[i].getName().toLowerCase().equals(name.toLowerCase())){
                 return this.users[i];
             }
         }
@@ -47,22 +47,19 @@ public class Network {
     *  If the given name is already a user in this network, does nothing and returns false;
     *  Otherwise, creates a new user with the given name, adds the user to this network, and returns true. */
     public boolean addUser(String name) {
-        if(this.getUser(name)!=null){
+        if(this.getUser(name)!=null||this.userCount == this.users.length){
             return false;
         }
-        if(this.userCount<this.users.length){
-            this.users[this.userCount] = new User(name);
-            this.userCount++;
-            return true;
-        }
-        return false;
+        this.users[this.userCount] = new User(name);
+        this.userCount++;
+        return true;
     }
 
     /** Makes the user with name1 follow the user with name2. If successful, returns true.
      *  If any of the two names is not a user in this network,
      *  or if the "follows" addition failed for some reason, returns false. */
     public boolean addFollowee(String name1, String name2) {
-        if(getUser(name1)==null || getUser(name2) == null || name1.equals(name2)){
+        if(getUser(name1)==null || getUser(name2) == null || name1.isEmpty() || name2.isEmpty()|| name1.equals(name2)){
             return false;
         }
         return getUser(name1).addFollowee(name2);
@@ -71,13 +68,13 @@ public class Network {
     /** For the user with the given name, recommends another user to follow. The recommended user is
      *  the user that has the maximal mutual number of followees as the user with the given name. */
     public String recommendWhoToFollow(String name) {
-        if(getUser(name)==null&&this.users[0]==null){
+        if(name == null || name.isEmpty() || getUser(name)==null || this.users[0]==null){
             return null;
         }
         int max =0;
         String thename = null;
         for (int i = 0; i < this.getUserCount(); i++) {
-            if(this.users[i] !=null && getUser(name)!=this.users[i] && getUser(name).countMutual(this.users[i])>max){
+            if((this.users[i] !=null && !this.getUser(name).follows(this.users[i].getName()) || getUser(name)!=this.users[i]) && getUser(name).countMutual(this.users[i])>max){
                 max = getUser(name).countMutual(users[i]);
                 thename = users[i].getName();
             }
@@ -105,9 +102,12 @@ public class Network {
     /** Returns the number of times that the given name appears in the follows lists of all
      *  the users in this network. Note: A name can appear 0 or 1 times in each list. */
     private int followeeCount(String name) {
+        if(name==null ||name.isEmpty() || this.getUser(name)==null){
+            return 0;
+        }
         int counter = 0;
         for(int i=0; i<this.getUserCount(); i++){
-            if(this.users[i]!=null&& this.users[i].follows(name)){
+            if(this.users[i]!=null&& this.users[i].follows(name.toLowerCase())&&this.users[i] != this.getUser(name.toLowerCase())){
                 counter++;
             }
         }
