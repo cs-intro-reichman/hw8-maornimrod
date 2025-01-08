@@ -59,7 +59,7 @@ public class Network {
      *  If any of the two names is not a user in this network,
      *  or if the "follows" addition failed for some reason, returns false. */
     public boolean addFollowee(String name1, String name2) {
-        if(getUser(name1)==null || getUser(name2) == null || name1.isEmpty() || name2.isEmpty()|| name1.equals(name2)){
+        if(name1.isEmpty() || name2.isEmpty() || name1.isEmpty() || name2.isEmpty() ||getUser(name1)==null || getUser(name2) == null || name1.equals(name2)){
             return false;
         }
         return getUser(name1).addFollowee(name2);
@@ -68,15 +68,17 @@ public class Network {
     /** For the user with the given name, recommends another user to follow. The recommended user is
      *  the user that has the maximal mutual number of followees as the user with the given name. */
     public String recommendWhoToFollow(String name) {
-        if(name == null || name.isEmpty() || getUser(name)==null || this.users[0]==null){
+        if(name == null || name.isEmpty() || this.getUser(name)==null){
             return null;
         }
-        int max =0;
+        int max =-1;
         String thename = null;
         for (int i = 0; i < this.getUserCount(); i++) {
-            if((this.users[i] !=null && !this.getUser(name).follows(this.users[i].getName()) || getUser(name)!=this.users[i]) && getUser(name).countMutual(this.users[i])>max){
-                max = getUser(name).countMutual(users[i]);
-                thename = users[i].getName();
+            if((this.users[i] !=null && !this.getUser(name).follows(this.users[i].getName()) || !this.users[i].getName().toLowerCase().equals(name.toLowerCase()))){
+                if(getUser(name).countMutual(this.users[i])>max){
+                    max = getUser(name).countMutual(users[i]);
+                    thename = users[i].getName();
+                }       
             }
         }
         return thename;
